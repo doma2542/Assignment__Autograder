@@ -1,3 +1,9 @@
+const crypto = require('crypto');
+
+function getHashValues(code) {
+    return crypto.createHash('sha256').update(code).digest('hex');
+}
+
 function countWordFrequency(document) {
     // Split the document into words
     const words = document.split(/\s+/);
@@ -36,7 +42,7 @@ function compareWordFrequencyMaps(doc1, doc2) {
 
     // Assuming both documents have the same number of unique words
     const percentageSameFrequency = (sameFrequencyCount / totalWords) * 100;
-    console.log(percentageSameFrequency)
+    // console.log(percentageSameFrequency)
 
     // Return the percentage
     return percentageSameFrequency;
@@ -126,11 +132,32 @@ function concatenateLines(code) {
     return code.split('\n').join('');
 }
 
-// Function to extract hash values from each line
-function getHashValues(code) {
-    // For simplicity, use a basic hash function
-    return code.split('').map(char => char.charCodeAt(0)).join('');
-}
+
+
+const removeCommentsMap = {
+    'C++': removeWhitespaceAndCommentsCPP,
+    'C': removeWhitespaceAndCommentsC,
+    'Dart': removeWhitespaceAndCommentsDart,
+    'SQL': removeWhitespaceAndCommentsSQL,
+    'Python': removeWhitespaceAndCommentsPython,
+    'PHP': removeWhitespaceAndCommentsPHP
+};
+
+const normalizeIdentifiersMap = {
+    'C++': normalizeIdentifiersCPP,
+    'C': normalizeIdentifiersCPP,
+    'Dart': normalizeIdentifiersDart,
+    'SQL': normalizeIdentifiersSQL,
+    'javascript': normalizeIdentifiersJavaScript,
+    'Python': normalizeIdentifiersPython,
+    'PHP': normalizeIdentifiersPHP
+};
+
+
+// if (!removeCommentsMap[language]) throw new Error('Unsupported language');
+// cleanedCode1 = removeCommentsMap[language](code1);
+// cleanedCode2 = removeCommentsMap[language](code2);
+
 
 
 function normalizeIdentifiers(language, code) {
@@ -171,44 +198,16 @@ function removeWhitespaceAndCommentsPHP(code) {
 // Baker's Dup technique implementation
 function bakersDup(code1, code2, language) {
     let cleanedCode1, cleanedCode2;
-console.log(language)
-    // Remove whitespace characters and comments based on the language
-    if (language === 'C++') {
-        cleanedCode1 = removeWhitespaceAndCommentsCPP(code1);
-        cleanedCode2 = removeWhitespaceAndCommentsCPP(code2);
-    } else if (language === 'Dart') {
-        cleanedCode1 = removeWhitespaceAndCommentsDart(code1);
-        cleanedCode2 = removeWhitespaceAndCommentsDart(code2);
-    } else if (language === 'SQL') {
-        cleanedCode1 = removeWhitespaceAndCommentsSQL(code1);
-        cleanedCode2 = removeWhitespaceAndCommentsSQL(code2);
-    } else if (language === 'c') {
-        cleanedCode1 = removeWhitespaceAndCommentsC(code1);
-        cleanedCode2 = removeWhitespaceAndCommentsC(code2);
-    } else if (language === 'Python') {
-        cleanedCode1 = removeWhitespaceAndCommentsPython(code1);
-        cleanedCode2 = removeWhitespaceAndCommentsPython(code2);
-    }
-    else if (language === 'PHP') {
-        cleanedCode1 = removeWhitespaceAndCommentsPHP(code1);
-        cleanedCode2 = removeWhitespaceAndCommentsPHP(code2);
-    } else {
-        throw new Error('Unsupported language');
-    }
 
-    // Normalize identifiers for Python
-    if (language === 'Python') {
-        const normalizedCode1 = normalizeIdentifiersPython(cleanedCode1);
-        const normalizedCode2 = normalizeIdentifiersPython(cleanedCode2);
-        cleanedCode1 = normalizedCode1;
-        cleanedCode2 = normalizedCode2;
-    }
-    if (language !== 'Python') {
-        const normalizedCode1 = normalizeIdentifiers(language, cleanedCode1);
-        const normalizedCode2 = normalizeIdentifiers(language, cleanedCode2);
-        cleanedCode1 = normalizedCode1;
-        cleanedCode2 = normalizedCode2;
-    }
+    // Remove whitespace characters and comments based on the language
+    if (!removeCommentsMap[language]) throw new Error('Unsupported language');
+    cleanedCode1 = removeCommentsMap[language](code1);
+    cleanedCode2 = removeCommentsMap[language](code2);
+
+
+    cleanedCode1 = normalizeIdentifiersMap[language](cleanedCode1);
+    cleanedCode2 = normalizeIdentifiersMap[language](cleanedCode2);
+
     
     // Concatenate lines into a single string
     const concatenatedCode1 = concatenateLines(cleanedCode1);
