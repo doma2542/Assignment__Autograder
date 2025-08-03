@@ -92,5 +92,3 @@ Submitting File
 3. Manideep Ram Gunje       – 230101044  
 4. Sankiti Aishwarya        – 230102086  
 
-GitHub Repository
-https://github.com/Tanmay7404/Overnight_Hackathon_CSEA/
