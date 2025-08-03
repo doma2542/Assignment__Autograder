@@ -7,8 +7,6 @@ One can find the problem statement here "https://docs.google.com/document/d/1m3t
 
 The CS Assignment Autograder Portal is a comprehensive platform designed to streamline the assignment submission, plagiarism detection, and grading process for Computer Science students and instructors at IIT Guwahati. This project aims to alleviate the challenges faced by both students and teaching assistants by providing a centralized and automated system for managing assignments.
 
-Link for deployed website [Autograder](https://overnight-hackathon-csea-frontend.vercel.app/)
-
 
 **Submission Management:**
 
